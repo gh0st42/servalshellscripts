@@ -12,3 +12,9 @@ Some commands shortening and automating some serval-dna tasks.
 * `sendmsg <remote_sid> "<msg>"` - send a message to `remote_sid`
 
 **ATM all commands via cmdline interface, NOT restful!**
+
+## mon
+
+ANSI-colored status monitor for serval-dna, prints status, number of peers, files, unread messages and your own SID.
+
+* `servalmon`

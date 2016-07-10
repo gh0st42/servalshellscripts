@@ -1,0 +1,51 @@
+#!/bin/bash
+
+### CONFIG STUFF
+
+SLEEPTIME=2
+
+### DON'T TOUGH BELOW!!
+
+source ./ansi.sh
+
+progress=(- '\' '|' /)
+progress_idx=0
+
+trap ctrl_c INT
+
+function ctrl_c() {
+        echo -e "$RESETATTR** Trapped CTRL-C$SHOWCURSOR"
+	exit 1
+}
+
+function print_stat {
+	servald_status=$(servald status | grep status | cut -d ":" -f 2)
+	statuscolor="$RED"
+	
+	if [ $servald_status == "running" ]; then
+		my_sid=$(servald id self | tail -n 1 )
+		num_peers=$(servald peer count)
+		num_files=$(servald rhizome list | grep ":file:" | wc -l | sed -e 's/^[ \t]*//')
+		num_unread=$(servald meshms list conversations $my_sid | grep unread | wc -l)
+		statuscolor="$GREEN"
+	fi
+	echo -e "$HIDECURSOR"
+	echo -e "$BLUE ==$CYAN Serval DNA$LTGREEN Status Monitor$BLUE =="
+	echo
+	echo -e "$WHITE Status: $statuscolor$servald_status \t\t $LTYELLOW ${progress[$progress_idx]}"
+	if [ $servald_status == "running" ]; then
+		echo -e "$WHITE My SID: $LTBLUE $my_sid"
+		echo -e "$WHITE Peers: $LTGREEN $num_peers"
+		echo -e "$WHITE Files: $LTGREEN $num_files"
+		echo -e "$WHITE Unread: $LTGREEN $num_unread"
+	fi
+	echo -e "$DEFAULT_FG"
+	
+	progress_idx=$(((progress_idx +1) % 4))
+}
+
+while true; do
+	clear
+	print_stat
+	sleep $SLEEPTIME
+done
