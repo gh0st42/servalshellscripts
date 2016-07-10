@@ -10,6 +10,7 @@ Some commands shortening and automating some serval-dna tasks.
 * `listmsgs <remote_sid>` - list all messages with `remote_sid` and oneself
 * `readmsgs <remote_sid> [offset]` - mark all message read or up until `offset`
 * `sendmsg <remote_sid> "<msg>"` - send a message to `remote_sid`
+* `addfile <file>` - add a file to rhizome store
 
 **ATM all commands via cmdline interface, NOT restful!**
 
@@ -24,7 +25,7 @@ ANSI-colored status monitor for serval-dna, prints status, number of peers, file
 `./chatbot`
 
 Simple bash based chat bot for serval-dna. Edit script for various settings.
-
+                                                                                  
 Config variables
 - `SLEEPTIME` delay between checking for new meshms
 - `ADMIN_SID` a special SID, simple authentication
