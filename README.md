@@ -20,6 +20,8 @@ Some commands shortening and automating some serval-dna tasks.
 
 ANSI-colored status monitor for serval-dna, prints status, number of peers, files, unread messages and your own SID.
 
+![servalmon-demo-out](https://cloud.githubusercontent.com/assets/1264131/16715898/5485d282-46ed-11e6-9260-aa5c9a469186.gif)
+
 ## /bot
 
 `./chatbot`
