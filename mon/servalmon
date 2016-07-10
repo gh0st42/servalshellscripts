@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Simple bash based status monitor for serval-dna
+# Written by Lars Baumgaertner (c) 2016
+
 ### CONFIG STUFF
 
 SLEEPTIME=2

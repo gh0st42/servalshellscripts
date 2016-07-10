@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Simple bash based chat bot for serval-dna
+# Written by Lars Baumgaertner (c) 2016
+#
+# Set config stuff below
+# - SLEEPTIME, delay between checking for new meshms
+# - ADMIN_SID, a special SID, simple authentication
+#
+# User defined hooks
+# - cmd_parser : default just reply with string PUBLIC
+# - admin_cmd_parser : only called if message is from $ADMIN_SID, default reply with ADMIN
+
+### CONFIG STUFF
+
+SLEEPTIME=1
+ADMIN_SID="87DB7FDA341BE785556F12A1F90649687C3036CD4849F983F04DE536B5FB9D54"
+
+### HOOKS
+
+# Info for all cmd_parser hooks:
+# $1 remote_sid
+# $2 received message string
+# own SID globally in $my_sid
+
+function cmd_parser {
+    echo $1 : $2
+    servald meshms send message $my_sid $remote_sid "PUBLIC"
+}
+
+function admin_cmd_parser {
+    echo $1 : $2
+    servald meshms send message $my_sid $remote_sid "ADMIN"
+}
+
+### DON'T TOUGH BELOW!!
+
+my_sid=$(servald id self | tail -n1)
+
+while true; do
+    #echo "Checking"
+    unreads=$(servald meshms list conversations $my_sid | grep unread)
+    for i in $unreads; do
+        remote_sid=$(echo $i | cut -d ":" -f 2)
+        msglist=$(servald meshms list messages $my_sid $remote_sid | grep -e ":<:" -e ":MARK:" | sort -r -n)
+        if [[ $msglist =~ MARK ]]; then
+            found=0     
+        else
+            found=1
+            echo "NO MARK"
+            exit 1
+        fi
+        while read -r line; do
+#            echo "RAW: $line"
+            if [ $found == 0 ]; then
+                if [[ $line =~ "MARK:read" ]]; then
+                    found=1
+                    echo "found in line $line"
+                fi
+            else
+                echo "DEBUG: $found $line"
+                offset=$(echo $line | cut -d ":" -f 2)
+                msg=$(echo $line | sed -e "s/^.*:<://g")
+                #echo $offset
+                if [[ $remote_sid == $ADMIN_SID ]]; then
+                    admin_cmd_parser $remote_sid "$msg"
+                else 
+                    cmd_parser $remote_sid "$msg"
+                fi
+                servald meshms read messages $my_sid $remote_sid $offset
+                break
+            fi
+        done <<< "$msglist"
+    done
+    sleep $SLEEPTIME
+done

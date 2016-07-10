@@ -2,7 +2,7 @@
 
 Various shell scripts to work with [serval-dna](http://github.com/servalproject/serval-dna)
 
-## cmds
+## /cmds
 
 Some commands shortening and automating some serval-dna tasks.
 
@@ -13,8 +13,22 @@ Some commands shortening and automating some serval-dna tasks.
 
 **ATM all commands via cmdline interface, NOT restful!**
 
-## mon
+## /mon
+
+`./servalmon`
 
 ANSI-colored status monitor for serval-dna, prints status, number of peers, files, unread messages and your own SID.
 
-* `servalmon`
+## /bot
+
+`./chatbot`
+
+Simple bash based chat bot for serval-dna. Edit script for various settings.
+
+Config variables
+- `SLEEPTIME` delay between checking for new meshms
+- `ADMIN_SID` a special SID, simple authentication
+
+User defined hooks
+- `cmd_parser` default just reply with string PUBLIC
+- `admin_cmd_parser` only called if message is from `$ADMIN_SID`, default reply with string ADMIN
