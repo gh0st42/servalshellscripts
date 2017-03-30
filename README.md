@@ -11,8 +11,12 @@ Some commands shortening and automating some serval-dna tasks.
 * `readmsgs <remote_sid> [offset]` - mark all message read or up until `offset`
 * `sendmsg <remote_sid> "<msg>"` - send a message to `remote_sid`
 * `addfile <file>` - add a file to rhizome store
+*  journal <cmd> [parameters] - curl based frontend to manage journals
 
-**ATM all commands via cmdline interface, NOT restful!**
+**ATM all commands (except for journal) via cmdline interface, NOT restful!**
+
+Restful username and passwort:
+Edit script and change variable `RESTAUTH`
 
 ## /mon
 
