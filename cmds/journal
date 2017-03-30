@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# simple curl based serval-dna journal frontend
+# Copyright: Lars Baumgaertner (c) 2017
+
+#SERVICE="sensor"
+#NAME="textlog4"
+
+if [ "$#" -lt 1 ]; then
+    echo "USAGE: $0 <command> [parameters...]"
+    echo " COMMANDS:"
+    echo "  ls # list all rhizome files"
+    echo "  list <service> <name> # bundle list filtered by service and name"
+    echo "  show <bundle id> # show bundle content"
+    echo "  append <service> <name> <entry> # append/create journal"
+    exit
+fi
+
+# args: none
+function get_first_identity {
+    curl -H "Expect:" --silent --dump-header http.header \
+        --basic --user pum:pum123 \
+        "http://127.0.0.1:4110/restful/keyring/identities.json" \
+        | grep -A 1 rows | tail -n1 | cut -d "\"" -f 2
+}
+
+# args: none
+function get_rhizome_list {
+    curl -H "Expect:" --silent --dump-header http.header \
+        --basic --user pum:pum123 "http://127.0.0.1:4110/restful/rhizome/bundlelist.json"    
+}
+
+# args: <service> <name> <author>
+function get_bundle_id {
+    get_rhizome_list | grep \"$1\" | grep \"$2\" | grep $3 | head -n1 | cut -d "," -f 4 | tr -d '"'    
+}
+
+# args: <bundle_id>
+function get_bundle_content {
+    curl -H "Expect:" --silent --dump-header http.header \
+        --basic --user pum:pum123 "http://127.0.0.1:4110/restful/rhizome/$1/decrypted.bin"    
+}
+
+# args: <author_id> <service> <name> <journal_entry>
+function journal_new {    
+    echo "$4" >file1
+    >manifest1
+    echo "service=$2" >>manifest1
+    echo "name=$3" >>manifest1
+    curl \
+         -H "Expect:" \
+         --silent --show-error --write-out '%{http_code}' \
+         --output file1.manifest \
+         --dump-header http.header \
+         --basic --user pum:pum123 \
+         --form "bundle-author=$1" \
+         --form "manifest=@manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
+         --form "payload=@file1" \
+        "http://127.0.0.1:4110/restful/rhizome/append"
+}
+
+# args: <author_id> <bundle_id> <journal_entry>
+function journal_update {    
+    echo "$3" >file1
+    >manifest1    
+    curl \
+         -H "Expect:" \
+         --silent --show-error --write-out '%{http_code}' \
+         --output file1.manifest \
+         --dump-header http.header \
+         --basic --user pum:pum123 \
+         --form "bundle-author=$1" \
+         --form "bundle-id=$2" \
+         --form "manifest=@manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
+         --form "payload=@file1" \
+        "http://127.0.0.1:4110/restful/rhizome/append"
+}
+
+# args: <service> <name> <journal_entry>
+function journal_append {
+    SIDA=$(get_first_identity)
+    BID=$(get_bundle_id $1 $2 $SIDA)
+    if [ -z "$BID" ] ; then    
+        journal_new $SIDA $1 $2 "$3"
+    else    
+        journal_update $SIDA $BID "$3"
+    fi
+
+}
+
+# args: <service> <name>
+function get_bundle_list {
+    echo 1>&2  service, bundle_id, author, size, name
+    get_rhizome_list | grep \"$1\" | grep \"$2\" | cut -d "," -f 3,4,8,10,14 | tr -d '"' | tr -d ']'    
+}
+
+if [ "$1" = "list" ]; then
+    get_bundle_list $2 $3
+fi
+if [ "$1" = "show" ]; then
+    get_bundle_content $2    
+fi
+if [ "$1" = "append" ]; then    
+    journal_append "$2" "$3" "$4"
+fi
+if [ "$1" = "ls" ]; then    
+    get_rhizome_list
+fi
+exit
