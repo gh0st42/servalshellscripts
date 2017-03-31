@@ -44,38 +44,44 @@ function get_bundle_content {
 }
 
 # args: <author_id> <service> <name> <journal_entry>
-function journal_new {    
-    echo "$4" >file1
-    >manifest1
-    echo "service=$2" >>manifest1
-    echo "name=$3" >>manifest1
+function journal_new {  
+    TMPDIR=$(mktemp -d)  
+    echo "$4" >$TMPDIR/file1
+    >$TMPDIR/manifest1
+    echo "service=$2" >>$TMPDIR/manifest1
+    echo "name=$3" >>$TMPDIR/manifest1
     curl \
          -H "Expect:" \
          --silent --show-error --write-out '%{http_code}' \
-         --output file1.manifest \
+         --output $TMPDIR/file1.manifest \
          --dump-header http.header \
          --basic --user $RESTAUTH \
          --form "bundle-author=$1" \
-         --form "manifest=@manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
-         --form "payload=@file1" \
+         --form "manifest=@$TMPDIR/manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
+         --form "payload=@$TMPDIR/file1" \
         "http://127.0.0.1:4110/restful/rhizome/append"
+    rm $TMPDIR/*
+    rmdir $TMPDIR
 }
 
 # args: <author_id> <bundle_id> <journal_entry>
 function journal_update {    
-    echo "$3" >file1
-    >manifest1    
+    TMPDIR=$(mktemp -d) 
+    echo "$3" >$TMPDIR/file1
+    >$TMPDIR/manifest1    
     curl \
          -H "Expect:" \
          --silent --show-error --write-out '%{http_code}' \
-         --output file1.manifest \
+         --output $TMPDIR/file1.manifest \
          --dump-header http.header \
          --basic --user $RESTAUTH \
          --form "bundle-author=$1" \
          --form "bundle-id=$2" \
-         --form "manifest=@manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
-         --form "payload=@file1" \
+         --form "manifest=@$TMPDIR/manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
+         --form "payload=@$TMPDIR/file1" \
         "http://127.0.0.1:4110/restful/rhizome/append"
+    rm $TMPDIR/*
+    rmdir $TMPDIR
 }
 
 # args: <service> <name> <journal_entry>
