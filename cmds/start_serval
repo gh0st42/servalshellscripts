@@ -1,0 +1,36 @@
+#!/bin/bash
+
+USER="pum"
+PASS="pum123"
+
+
+RESTAUTH="$USER:$PASS"
+# args: none
+function get_first_identity {
+    curl -H "Expect:" --silent --dump-header http.header \
+        --basic --user $RESTAUTH \
+        "http://127.0.0.1:4110/restful/keyring/identities.json" \
+        | grep -A 1 rows | tail -n1 | cut -d "\"" -f 2
+}
+
+
+export SERVALINSTANCE_PATH=$(pwd)
+servald start
+
+servald config set interfaces.0.match 'eth*'
+servald config set api.restful.users.$USER.password $PASS
+
+SID=$(get_first_identity)
+if [ "$SID" = "]" ]; then 
+    echo "Creating new identity"
+    servald keyring add
+
+    servald stop
+    sleep 1
+    servald start
+fi
+
+if [ $# -gt 0 ]; then
+    echo "Going interactive"
+    bash
+fi
