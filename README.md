@@ -18,7 +18,9 @@ Some commands shortening and automating some serval-dna tasks.
 * `sendmsg <remote_sid> "<msg>"` - send a message to `remote_sid`
 * `addfile <file>` - add a file to rhizome store
 * `journal <cmd> [parameters]` - curl based frontend to manage journals
+* `meshms <cmd> [parameters]` - curl based frontend for meshms functions
 * `start_serval [i]` - start serval with instance path = cwd, generates default identity if none exists, give any parameter goes into interactive shell with SERVALINSTANCE_PATH set corretly
+* `libservalcurl.sh` - a bash library to be sourced for scripts using curl 
 
 **ATM all commands (except for journal) via cmdline interface, NOT restful!**
 
