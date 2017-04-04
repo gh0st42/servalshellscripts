@@ -15,19 +15,25 @@ function get_first_identity {
 
 
 export SERVALINSTANCE_PATH=$(pwd)
-servald start
+echo "Starting daemon"
+servald start > /dev/null
 
-servald config set interfaces.0.match 'eth*'
-servald config set api.restful.users.$USER.password $PASS
+echo "Setting interfaces to 'eth*'"
+servald config set interfaces.0.match 'eth*' > /dev/null
+echo "Setting RESTAUTH to $RESTAUTH"
+servald config set api.restful.users.$USER.password $PASS > /dev/null
 
 SID=$(get_first_identity)
-if [ "$SID" = "]" ]; then 
+if [ ${#SID} -lt 64 ]; then 
     echo "Creating new identity"
     servald keyring add
-
-    servald stop
+    
+    echo "Restarting daemon"
+    servald stop > /dev/null
+    #servald status 
     sleep 1
-    servald start
+    servald start > /dev/null
+    #servald status
 fi
 
 if [ $# -gt 0 ]; then
