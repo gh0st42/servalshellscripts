@@ -11,7 +11,8 @@ Some commands shortening and automating some serval-dna tasks.
 * `readmsgs <remote_sid> [offset]` - mark all message read or up until `offset`
 * `sendmsg <remote_sid> "<msg>"` - send a message to `remote_sid`
 * `addfile <file>` - add a file to rhizome store
-*  journal <cmd> [parameters] - curl based frontend to manage journals
+* `journal <cmd> [parameters]` - curl based frontend to manage journals
+* `start_serval [i]` - start serval with instance path = cwd, generates default identity if none exists, give any parameter goes into interactive shell with SERVALINSTANCE_PATH set corretly
 
 **ATM all commands (except for journal) via cmdline interface, NOT restful!**
 
