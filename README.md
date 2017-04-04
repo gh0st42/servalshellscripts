@@ -2,6 +2,12 @@
 
 Various shell scripts to work with [serval-dna](http://github.com/servalproject/serval-dna)
 
+## dependencies
+
+* servald from serval-dna package installed
+* curl
+* bash in `/bin/bash` might be removed as a dependecy in the future
+
 ## /cmds
 
 Some commands shortening and automating some serval-dna tasks.
