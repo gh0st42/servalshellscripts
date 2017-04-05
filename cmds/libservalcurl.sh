@@ -41,6 +41,12 @@ function get_bundle_content {
         --basic --user $RESTAUTH "http://127.0.0.1:4110/restful/rhizome/$1/decrypted.bin"    
 }
 
+# args: <bundle_id>
+function get_bundle_manifest {
+    curl -H "Expect:" --silent \
+        --basic --user $RESTAUTH "http://127.0.0.1:4110/restful/rhizome/$1.rhm"
+}
+
 # args: <author_id> <service> <name> <journal_entry>
 function journal_new {  
     TMPDIR=$(mktemp -d)  
@@ -48,10 +54,11 @@ function journal_new {
     >$TMPDIR/manifest1
     echo "service=$2" >>$TMPDIR/manifest1
     echo "name=$3" >>$TMPDIR/manifest1
+    echo "sender=$1" >>$TMPDIR/manifest1
     curl \
          -H "Expect:" \
          --silent \
-         --output $TMPDIR/file1.manifest \         
+         --output $TMPDIR/file1.manifest \
          --basic --user $RESTAUTH \
          --form "bundle-author=$1" \
          --form "manifest=@$TMPDIR/manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
@@ -145,4 +152,19 @@ function meshms_send {
         --basic --user $RESTAUTH \
         --form "message=$3;type=text/plain;charset=utf-8" \
         "http://127.0.0.1:4110/restful/meshms/$1/$2/sendmessage"
+}
+
+############################
+# shell helpers
+############################
+
+
+function bytesToHuman() {
+    b=${1:-0}; d=''; s=0; S=(Bytes {K,M,G,T,E,P,Y,Z}iB)
+    while ((b > 1024)); do
+        d="$(printf ".%02d" $((b % 1024 * 100 / 1024)))"
+        b=$((b / 1024))
+        let s++
+    done
+    echo "$b$d ${S[$s]}"
 }
