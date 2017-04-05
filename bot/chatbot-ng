@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Simple bash based chat bot for serval-dna, 100% curl-based
+# Written by Lars Baumgaertner (c) 2017
+#
+# requires "meshms" helper script in PATH
+#
+# Set config stuff below
+# - SLEEPTIME, delay between checking for new meshms
+# - ADMIN_SID, a special SID, simple authentication
+#
+# User defined hooks
+# - cmd_parser : default just reply with string PUBLIC
+# - admin_cmd_parser : only called if message is from $ADMIN_SID, default reply with ADMIN
+
+### CONFIG STUFF
+
+SLEEPTIME=1
+ADMIN_SID="50CFAFCACE8F7B8D4BA007AA768EFA94D23B43185FF3A880616359D3AD048D70"
+
+### HOOKS
+
+# Info for all cmd_parser hooks:
+# $1 remote_sid
+# $2 received message string
+# $3 short_remote
+# $4 timestamp
+# own SID globally in $my_sid
+
+function cmd_parser {
+    echo $(date -d @$4) | $3 : $2
+    meshms send $1 "PUBLIC" >/dev/null
+}
+
+function admin_cmd_parser { 
+    echo "$(date -d \@$4) | $3 : $2"
+    meshms send $1 "ADMIN" >/dev/null
+}
+
+### DON'T TOUCH BELOW!!
+
+while true; do
+    #echo "Checking"    
+    unreads=$(meshms list | grep false)
+    #echo $unreads
+    for i in $unreads; do        
+        remote_sid=$(echo $i | cut -d "\"" -f 2)        
+        msglist=$(meshms msgs $remote_sid | grep "\"<\"" | sed -n '1!G;h;$p' )
+        while read -r line; do            
+            isread=$(echo $line | cut -d \" -f 7 | cut -d , -f 3)            
+            if [ $isread = "false" ]; then
+                #echo "new msg: $line"
+                timestamp=$(echo $line | cut -d \" -f 7 | cut -d , -f 4)                
+                offset=$(echo $line | cut -d , -f 3)
+                msg=$(echo $line | cut -d \" -f 6)
+                short_remote="$(echo $remote_sid | cut -c1-6)*"                
+                if [[ $remote_sid == $ADMIN_SID ]]; then
+                    admin_cmd_parser $remote_sid "$msg" $short_remote $timestamp
+                else 
+                    cmd_parser $remote_sid "$msg" $short_remote $timestamp
+                fi
+                meshms read $remote_sid $offset >/dev/null              
+            fi
+        done <<< "$msglist"
+    done
+    sleep $SLEEPTIME    
+done
