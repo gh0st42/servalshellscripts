@@ -22,7 +22,7 @@ Some commands shortening and automating some serval-dna tasks.
 * `start_serval [i]` - start serval with instance path = cwd, generates default identity if none exists, give any parameter goes into interactive shell with SERVALINSTANCE_PATH set corretly
 * `libservalcurl.sh` - a bash library to be sourced for scripts using curl 
 
-**ATM all commands (except for journal) via cmdline interface, NOT restful!**
+**all commands (except for journal and meshms) via cmdline interface, NOT restful!**
 
 Restful username and passwort:
 Edit script and change variable `RESTAUTH`
