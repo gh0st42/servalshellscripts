@@ -28,12 +28,12 @@ ADMIN_SID="50CFAFCACE8F7B8D4BA007AA768EFA94D23B43185FF3A880616359D3AD048D70"
 # own SID globally in $my_sid
 
 function cmd_parser {
-    echo $(date -d @$4) | $3 : $2
+    echo "$(date -d \@$4) | $3 : $2"
     meshms send $1 "PUBLIC" >/dev/null
 }
 
 function admin_cmd_parser { 
-    echo "$(date -d \@$4) | $3 : $2"
+    echo "$(date -d \@$4) | ADMIN($3) : $2"
     meshms send $1 "ADMIN" >/dev/null
 }
 
