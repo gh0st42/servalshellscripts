@@ -25,7 +25,6 @@ ADMIN_SID="50CFAFCACE8F7B8D4BA007AA768EFA94D23B43185FF3A880616359D3AD048D70"
 # $2 received message string
 # $3 short_remote
 # $4 timestamp
-# own SID globally in $my_sid
 
 function cmd_parser {
     echo "$(date -d \@$4) | $3 : $2"
