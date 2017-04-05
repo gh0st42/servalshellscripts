@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# simple curl based serval-dna meshms frontend
+# Copyright: Lars Baumgaertner (c) 2017
+
+. $(dirname $(readlink -f $0))/libservalcurl.sh
+
+if [ "$#" -lt 1 ]; then
+    echo "USAGE: $0 <command> [parameters...]"
+    echo " COMMANDS:"
+    echo "  list # list all conversations"
+    echo "  msgs <remote_sid> # show messages"
+    echo "  read <remote_sid> [offset] # mark messages read"
+    echo "  send <remote_sid> <msg_text> # send new message"
+    exit
+fi
+
+SID=$(get_first_identity)
+
+
+#echo $rawjson
+
+if [ "$1" = "list" ]; then    
+    rawjson=$(meshms_conv_list $SID)
+
+    echo -n "# header: "
+    echo $rawjson | grep -Po "\[\"_.+\"\]" | sed "s/\"my_sid\",//g"
+
+    #echo content
+    echo $rawjson | grep -Po "\[\d.+?\]" | sed "s/\"$SID\",//g"
+fi
+if [ "$1" = "msgs" ]; then
+    meshms_msg_list $SID $2 | sed "s/\"$SID\",//g" \
+    | sed "s/\"$2\",//g" \
+    | sed "s/\"my_sid\",\"their_sid\",//g" 
+fi
+if [ "$1" = "read" ]; then
+    if [ "$#" = 2 ]; then
+        meshms_readall_conv $SID $2
+    else
+        meshms_read $SID $2 $3
+    fi
+fi
+if [ "$1" = "send" ]; then    
+    meshms_send $SID $2 "$3"
+fi
+exit
