@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# simple curl based serval-dna rhizome frontend
+# Copyright: Lars Baumgaertner (c) 2017
+
+. $(dirname $(readlink -f $0))/libservalcurl.sh
+
+if [ "$#" -lt 1 ]; then
+    echo "USAGE: $0 <command> [parameters...]"
+    echo " COMMANDS:"
+    echo "  list # list all bundles"
+    echo "  get <bundle_id> # dump bundle content"
+    echo "  manifest <bundle_id> # get bundle manifest"
+    echo "  put <path_to_file> # share a file"
+    echo "  send <remote_id> <path_to_file> # send a file 1:1"
+    exit
+fi
+
+SID=$(get_first_identity)
+
+if [ "$1" = "list" ]; then    
+    rawjson=$(get_rhizome_list)
+    #echo $rawjson
+    #echo -n "# header: "
+    #echo $rawjson | grep -Po "\[\".+\"\], \"rows\"" | sed "s/, \"rows\"//g"
+
+    #echo content
+    files=$(echo $rawjson | grep -Po "\[.+?\]" | grep -v ".token" | tr -d \[ | tr -d \] | tr -d  \")
+    #echo $files
+    while read -r line; do
+        #echo $line
+        IFS=',' read -r -a array <<< "$line"        
+        echo "* SERVICE: ${array[2]} | NAME: ${array[13]}"
+        echo " + ${array[3]}"        
+        echo " + $(bytesToHuman ${array[9]}) / $(date -d \@${array[5]::-3} +"%T %x") / $(date -d \@${array[6]::-3} +"%T %x")" 
+        #echo " + $(bytesToHuman ${array[9]}) ${array[5]} ${array[6]}"
+        echo " + A: $(echo ${array[7]} | cut -c1-8)* S: $(echo ${array[11]} | cut -c1-8)* R: $(echo ${array[12]} | cut -c1-8)*"
+        echo
+    done <<< "$files"
+fi
+if [ "$1" = "get" ]; then
+    get_bundle_content $2
+fi
+if [ "$1" = "manifest" ]; then
+    get_bundle_manifest $2
+fi
+if [ "$1" = "put" ]; then
+    echo "n/a"
+fi
+if [ "$1" = "send" ]; then    
+    #meshms_send $SID $2 "$3"
+    echo "n/a"
+fi
+
