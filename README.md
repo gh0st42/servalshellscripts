@@ -37,7 +37,9 @@ ANSI-colored status monitor for serval-dna, prints status, number of peers, file
 
 ## /bot
 
-`./chatbot`
+`./chatbot` (DEPRECATED)
+
+`./chatbot-ng` - curl based version, requires `cmds/meshms` to be in PATH
 
 Simple bash based chat bot for serval-dna. Edit script for various settings.
                                                                                   
