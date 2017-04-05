@@ -33,7 +33,7 @@ function admin_cmd_parser {
     servald meshms send message $my_sid $remote_sid "ADMIN"
 }
 
-### DON'T TOUGH BELOW!!
+### DON'T TOUCH BELOW!!
 
 my_sid=$(servald id self | tail -n1)
 
