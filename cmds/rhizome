@@ -29,6 +29,10 @@ if [ "$1" = "list" ]; then
     #echo $files
     while read -r line; do
         #echo $line
+        if [ -z "$line"]; then
+            echo "rhizome store is empty"
+            break
+        fi
         IFS=',' read -r -a array <<< "$line"        
         echo "* SERVICE: ${array[2]} | NAME: ${array[13]}"
         echo " + ${array[3]}"        
@@ -44,8 +48,9 @@ fi
 if [ "$1" = "manifest" ]; then
     get_bundle_manifest $2
 fi
-if [ "$1" = "put" ]; then
-    echo "n/a"
+if [ "$1" = "put" ]; then    
+    name=$(basename $2)
+    bundle_new $SID "file" "$name" $2    
 fi
 if [ "$1" = "send" ]; then    
     #meshms_send $SID $2 "$3"

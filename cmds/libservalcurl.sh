@@ -47,6 +47,28 @@ function get_bundle_manifest {
         --basic --user $RESTAUTH "http://127.0.0.1:4110/restful/rhizome/$1.rhm"
 }
 
+# args: <author_id> <service> <name> <payload_file>
+function bundle_new {  
+    TMPDIR=$(mktemp -d)  
+    #echo "$4" >$TMPDIR/file1
+    >$TMPDIR/manifest1
+    echo "service=$2" >>$TMPDIR/manifest1
+    echo "name=$3" >>$TMPDIR/manifest1
+    echo "sender=$1" >>$TMPDIR/manifest1
+    curl \
+         -H "Expect:" \
+         --silent \
+         --output $TMPDIR/file1.manifest \
+         --basic --user $RESTAUTH \
+         --form "bundle-author=$1" \
+         --form "manifest=@$TMPDIR/manifest1;type=rhizome/manifest;format=\"text+binarysig\"" \
+         --form "payload=@$4" \
+        "http://127.0.0.1:4110/restful/rhizome/insert"
+    rm $TMPDIR/*
+    rmdir $TMPDIR
+}
+
+
 # args: <author_id> <service> <name> <journal_entry>
 function journal_new {  
     TMPDIR=$(mktemp -d)  
