@@ -29,7 +29,7 @@ if [ "$1" = "list" ]; then
     #echo $files
     while read -r line; do
         #echo $line
-        if [ -z "$line"]; then
+        if [ -z "$line" ]; then
             echo "rhizome store is empty"
             break
         fi
