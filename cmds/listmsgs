@@ -1,5 +1,0 @@
-#!/bin/sh
-
-MYSID=`servald id self | tail -n1`
-
-servald meshms list messages $MYSID $1
