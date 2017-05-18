@@ -9,7 +9,7 @@ SLEEPTIME=2
 
 ### DON'T TOUGH BELOW!!
 
-source ./ansi.sh
+. $(dirname $(readlink -f $0))/ansi.sh
 
 progress=(- '\' '|' /)
 progress_idx=0
