@@ -6,20 +6,17 @@ Various shell scripts to work with [serval-dna](http://github.com/servalproject/
 
 * servald from serval-dna package installed
 * curl
+* jq - required for json parsing in bash (`rtrigger`)
 * bash in `/bin/bash` might be removed as a dependecy in the future
 
 ## /cmds
 
 Some commands shortening and automating some serval-dna tasks.
 
-* `listconv` - list all conversations for oneself
-* `listmsgs <remote_sid>` - list all messages with `remote_sid` and oneself
-* `readmsgs <remote_sid> [offset]` - mark all message read or up until `offset`
-* `sendmsg <remote_sid> "<msg>"` - send a message to `remote_sid`
-* `addfile <file>` - add a file to rhizome store
 * `journal <cmd> [parameters]` - curl based frontend to manage journals
 * `meshms <cmd> [parameters]` - curl based frontend for meshms functions
 * `rhizome <cmd> [parameters]` - curl based frontend for rhizome functions
+* `rtrigger <cmd> [service-regex] [file-regex]` - curl based trigger for new rhizome bundles
 * `start_serval [i]` - start serval with instance path = cwd, generates default identity if none exists, give any parameter goes into interactive shell with SERVALINSTANCE_PATH set corretly
 * `libservalcurl.sh` - a bash library to be sourced for scripts using curl 
 
