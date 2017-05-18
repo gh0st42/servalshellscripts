@@ -68,6 +68,25 @@ function bundle_new {
     rmdir $TMPDIR
 }
 
+# args: <author_id> <payload_file> <bundle_id>
+function bundle_update {
+    BID=$3
+    TMPDIR=$(mktemp -d)      
+    
+    curl \
+         -H "Expect:" \
+         --silent \
+         --output $TMPDIR/file1.manifest \
+         --basic --user $RESTAUTH \
+         --form "bundle-author=$1" \
+         --form "bundle-id=$BID" \
+         --form "manifest=;type=rhizome/manifest;format=\"text+binarysig\"" \
+         --form "payload=@$2" \
+        "http://127.0.0.1:4110/restful/rhizome/insert"
+    rm $TMPDIR/*
+    rmdir $TMPDIR
+}
+
 
 # args: <author_id> <service> <name> <journal_entry>
 function journal_new {  

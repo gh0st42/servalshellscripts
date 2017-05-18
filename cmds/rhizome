@@ -12,6 +12,7 @@ if [ "$#" -lt 1 ]; then
     echo "  get <bundle_id> # dump bundle content"
     echo "  manifest <bundle_id> # get bundle manifest"
     echo "  put <path_to_file> # share a file"
+    echo "  update <path_to_file> <bundle_id> # update a file"
     echo "  send <remote_id> <path_to_file> # send a file 1:1"
     exit
 fi
@@ -36,7 +37,7 @@ if [ "$1" = "list" ]; then
         IFS=',' read -r -a array <<< "$line"        
         echo "* SERVICE: ${array[2]} | NAME: ${array[13]}"
         echo " + ${array[3]}"        
-        echo " + $(bytesToHuman ${array[9]}) / $(date -d \@${array[5]::-3} +"%T %x") / $(date -d \@${array[6]::-3} +"%T %x")" 
+        echo " + $(bytesToHuman ${array[9]}) | $(date -d \@${array[5]::-3} +"%T %x") | $(date -d \@${array[6]::-3} +"%T %x")" 
         #echo " + $(bytesToHuman ${array[9]}) ${array[5]} ${array[6]}"
         echo " + A: $(echo ${array[7]} | cut -c1-8)* S: $(echo ${array[11]} | cut -c1-8)* R: $(echo ${array[12]} | cut -c1-8)*"
         echo
@@ -51,6 +52,9 @@ fi
 if [ "$1" = "put" ]; then    
     name=$(basename $2)
     bundle_new $SID "file" "$name" $2    
+fi
+if [ "$1" = "update" ]; then        
+    bundle_update $SID $2 $3    
 fi
 if [ "$1" = "send" ]; then    
     #meshms_send $SID $2 "$3"
