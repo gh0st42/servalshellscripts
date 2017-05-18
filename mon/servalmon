@@ -7,7 +7,7 @@
 
 SLEEPTIME=2
 
-### DON'T TOUGH BELOW!!
+### DON'T TOUCH BELOW!!
 
 . $(dirname $(readlink -f $0))/ansi.sh
 
