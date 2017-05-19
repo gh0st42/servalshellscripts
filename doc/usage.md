@@ -22,7 +22,7 @@ export PATH=$PATH:<completepathtoservalshellscripts/cmds>
 
  ## Usage example in test network
 
- For the following example three hosts are used in the following layout:
+ For the test network three hosts are used with the following layout:
 
  `n1 <-> n2 <-> n3`
 
@@ -60,7 +60,7 @@ n1 ~/servaldir #
 ```
 
 After this command you get an interactive shell with *SERVALINSTANCE_PATH* set to your current directory.
-Without the optional parameter to `start_serval` you get back to your regular shell without the added environment varialbe.
+Omitting the optional parameter to `start_serval` you get back to your regular shell without the added environment variable.
 
 The command starts serval, generates a new identity if none is present, adds a REST user and adds *ALL* network interfaces to `servald`.
 Edit `start_serval` script for different REST credentials or only specific interfaces (e.g. `wlan*`).
@@ -87,7 +87,7 @@ hallo world example
 n1 ~/servaldir # 
 ```
 
-Changing *myfile* in place on n2 again (BID of file required):
+Updating *myfile* in place on n2 again (BID of file required):
 
 ```
 n2 ~/servaldir # echo "goodbye world example" > /tmp/myfile
@@ -195,7 +195,7 @@ n2 ~/servaldir #
 
 After sending the message we checked for new conversations, listed the messages in the conversation with n3 and afterwards marked all messages as read.
 
-Now the some from n1:
+Now the same from n1:
 
 ```
 n1 ~/servaldir # meshms send 00224C08CC240C36571791E8CBCB7EFEB29C551B585EA85815A369767AB55978 "hello"
@@ -237,7 +237,7 @@ Fri May 19 13:34:56 CEST 2017 | ADMIN(CBDECA*) : hello
 
 ### Automatic new content triggers
 
-In the following example we can to automatically process any new SENSOR journals that n1 receives.
+In the following example we want process any new SENSOR journals that n1 receives as soon as possible.
 
 First we need a script to handle new content, therefore we create a file named `/tmp/sensorevent` with the following content:
 
