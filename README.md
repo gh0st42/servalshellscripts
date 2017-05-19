@@ -2,6 +2,8 @@
 
 Various shell scripts to work with [serval-dna](http://github.com/servalproject/serval-dna)
 
+More detailed instructions and usage examples in `doc/usage.md`
+
 ## dependencies
 
 * servald from serval-dna package installed
@@ -20,7 +22,7 @@ Some commands shortening and automating some serval-dna tasks.
 * `start_serval [i]` - start serval with instance path = cwd, generates default identity if none exists, give any parameter goes into interactive shell with SERVALINSTANCE_PATH set corretly
 * `libservalcurl.sh` - a bash library to be sourced for scripts using curl 
 
-**all commands (except for journal and meshms) via cmdline interface, NOT restful!**
+**all commands work only via restful interface**
 
 Restful username and passwort:
 Edit script and change variable `RESTAUTH`
