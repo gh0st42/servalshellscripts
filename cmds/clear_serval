@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "Removing blob dir, hash dir and rhizome.db"
+rm -r blob
+rm -r hash 
+rm rhizome.db
+
+
