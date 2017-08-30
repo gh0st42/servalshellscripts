@@ -18,10 +18,12 @@ export SERVALINSTANCE_PATH=$(pwd)
 echo "Starting daemon"
 servald start > /dev/null
 
+set -f
 echo "Setting interfaces to '*'"
 servald config set interfaces.0.match '*' > /dev/null
 echo "Setting RESTAUTH to $RESTAUTH"
 servald config set api.restful.users.$USER.password $PASS > /dev/null
+set +f
 
 SID=$(get_first_identity)
 if [ ${#SID} -lt 64 ]; then 
