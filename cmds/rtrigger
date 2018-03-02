@@ -49,7 +49,7 @@ while true; do
     started=0
     curl -H "Expect:" --silent --no-buffer --basic --user $RESTAUTH http://127.0.0.1:4110/restful/rhizome/newsince/$token/bundlelist.json | while read -N 1 line ; do            
         buf="$buf$line"
-        if [[ $buf =~ ^.*,\"rows\"\:\[ ]]; then    
+        if [[ $buf =~ ^.*\"rows\"\:\[ ]]; then    
             started=1
             buf=""    
         elif [ "$started" == 1 ]; then        
